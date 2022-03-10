@@ -47,7 +47,6 @@ var saveTasks = function() {
 };
 
 var auditTask = function(taskEl) {
-
   // get date from task element
   var date = $(taskEl)
     .find("span")
@@ -81,22 +80,22 @@ $(".card .list-group").sortable({
   tolerance: "pointer",
   helper: "clone",
   activate: function(event, ui) {
-    
+
     $(this).addClass("dropover");
     $(".bottom-trash").addClass("bottom-trash-drag");
   },
   deactivate: function(event, ui) {
-    
+
     $(this).removeClass("dropover");
     $(".bottom-trash").removeClass("bottom-trash-drag");
   },
   over: function(event) {
-    
+
     $(event.target).addClass("dropover-active");
-    
+
   },
   out: function(event) {
-   
+
     $(event.target).removeClass("dropover-active");
 
   },
@@ -129,9 +128,6 @@ $(".card .list-group").sortable({
     tasks[arrName] = tempArr;
     saveTasks();
   },
-  stop: function(event) {
-    $(this).removeClass("dropover");
-  }
 });
 
 // trash icon can be dropped onto
@@ -141,22 +137,21 @@ $("#trash").droppable({
   drop: function(event, ui) {
     // remove dragged element from the dom
     ui.draggable.remove();
-    $(".bottom-trash").removeClass("bottom-trash-active")
+    $(".bottom-trash").removeClass("bottom-trash-active");
   },
   over: function(event, ui) {
     console.log(ui);
-    $(".bottom-trash").addClass("bottom-trash-active")
+    $(".bottom-trash").addClass("bottom-trash-active");
   },
   out: function(event, ui) {
-    console.log(ui);
-    $(".bottom-trash").removeClass("bottom-trash-active")
+    $(".bottom-trash").removeClass("bottom-trash-active");
   }
 });
 
 // convert text field into a jquery date picker
 $("#modalDueDate").datepicker({
   // force user to select a future date
-  minDate: 0
+  minDate: 1
 });
 
 // modal was triggered
@@ -297,12 +292,12 @@ $("#remove-tasks").on("click", function() {
   saveTasks();
 });
 
-//timer function to reset page
-setInterval(function () {
-  $(".card .list-group-item").each(function(index, el) {
-    auditTask(el);
-  });
-},(1000 * 60) * 30);
-
 // load tasks for the first time
 loadTasks();
+
+// audit task due dates every 30 minutes
+setInterval(function() {
+  $(".card .list-group-item").each(function() {
+    auditTask($(this));
+  });
+}, 1800000);
